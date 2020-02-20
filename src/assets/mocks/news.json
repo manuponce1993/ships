@@ -1,0 +1,76 @@
+{
+   "news": [
+      {
+         "id": 1,
+         "deleted": false,
+         "read": false,
+         "date": "01/10/2020",
+         "text": "El paciente <strong>Castellano</strong>  <span class='text-primary'>(#1)</span> se ausentó el 26/12/2019",
+         "cif": 1
+      },
+      {
+         "id": 2,
+         "deleted": false,
+         "read": false,
+         "date": "12/21/2019",
+         "text": "Atención vencida el 26/12/2019 del paciente <strong>Ontivero</strong> <span class='text-primary'>(#3)</span>",
+         "cif": 3
+      },
+      {
+         "id": 3,
+         "deleted": false,
+         "read": true,
+         "date": "12/18/2019",
+         "text": "El paciente <strong>Fernández</strong> <span class='text-primary'>(#4)</span> se ausentó el 29/12/2019",
+         "cif": 4
+      },
+      {
+         "id": 4,
+         "deleted": false,
+         "read": false,
+         "date": "12/10/2019",
+         "text": "El paciente <strong>Batalla</strong> <span class='text-primary'>(#9)</span> se ausentó el 26/12/2019",
+         "cif": 9
+      },
+      {
+         "id": 5,
+         "deleted": true,
+         "read": true,
+         "date": "12/04/2019",
+         "text": "El paciente <strong>Ontivero</strong> <span class='text-primary'>(#3)</span> se ausentó el 30/12/2019",
+         "cif": 3
+      },
+      {
+         "id": 6,
+         "deleted": true,
+         "read": true,
+         "date": "11/22/2019",
+         "text": "El paciente <strong>Acosta</strong> <span class='text-primary'>(#9)</span> se ausentó el 02/01/2019",
+         "cif": 9
+      },
+      {
+         "id": 7,
+         "deleted": false,
+         "read": true,
+         "date": "11/22/2019",
+         "text": "El paciente <strong>Acosta</strong> <span class='text-primary'>(#9)</span> se ausentó el 02/01/2019",
+         "cif": 9
+      },
+      {
+         "id": 8,
+         "deleted": false,
+         "read": true,
+         "date": "11/17/2019",
+         "text": "El paciente <strong>Sánchez</strong> <span class='text-primary'>(#5)</span> se ausentó el 02/01/2019",
+         "cif": 5
+      },
+      {
+         "id": 9,
+         "deleted": false,
+         "read": true,
+         "date": "10/10/2019",
+         "text": "El paciente <strong>Ferrer</strong> <span class='text-primary'>(#2)</span> se ausentó el 02/01/2019",
+         "cif": 2
+      }
+   ]
+}

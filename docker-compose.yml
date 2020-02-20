@@ -1,0 +1,12 @@
+version: '3.7' # Specify docker-compose version
+
+# Define the services/containers to be run
+services:
+   angular: # Name of the frontend service
+      container_name: web-financiadores-angular
+      build: ./ # Specify the directory of the Dockerfile
+      ports:
+         - 4200:4200 # Specify port-forwarding
+      volumes: # Mount host path in the container
+         - ./:/usr/src/app
+         - /usr/src/app/node_modules

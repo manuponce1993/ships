@@ -1,0 +1,120 @@
+// Import library functions for theme creation.
+@import '~@angular/material/theming';
+
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin general-mixins($theme) {
+   // Extract the palettes you need from the theme definition.
+   $primary-map: map-get($theme, primary);
+   $accent-map: map-get($theme, accent);
+   $warn-map: map-get($theme, warn);
+   $grey-map: map-get($custom-colors, cc-grey);
+
+   $primary: mat-color($primary-map);
+   $primary-lighter: mat-color($primary-map, lighter);
+   $primary-darker: mat-color($primary-map, darker);
+   $accent: mat-color($accent-map);
+   $accent-lighter: mat-color($accent-map, lighter);
+   $accent-darker: mat-color($accent-map, darker);
+   $warn: mat-color($warn-map);
+   $warn-lighter: mat-color($warn-map, lighter);
+   $warn-darker: mat-color($warn-map, darker);
+   // Custom colors
+   $grey: mat-color($grey-map);
+   $grey-darker: mat-color($grey-map, darker);
+   $grey-lighter: mat-color($grey-map, lighter);
+
+   // Text
+   .text-primary {
+      color: $primary;
+   }
+   .text-primary-darker {
+      color: $primary-darker;
+   }
+   .text-primary-lighter {
+      color: $primary-lighter;
+   }
+   .text-accent {
+      color: $accent;
+   }
+   .text-accent-lighter {
+      color: $accent-lighter;
+   }
+   .text-accent-darker {
+      color: $accent-darker;
+   }
+   .text-warn {
+      color: $warn;
+   }
+   .text-warn-lighter {
+      color: $warn-lighter;
+   }
+   .text-warn-darker {
+      color: $warn-darker;
+   }
+   .text-secondary {
+      color: $grey;
+   }
+   .text-secondary-darker {
+      color: $grey-darker;
+   }
+   .text-secondary-lighter {
+      color: $grey-lighter;
+   }
+
+   .bg-primary {
+      background-color: $primary;
+   }
+   .bg-primary-lighter {
+      background-color: $primary-lighter;
+   }
+   .bg-primary-darker {
+      background-color: $primary-darker;
+   }
+   .bg-accent {
+      background-color: $accent;
+   }
+   .bg-accent-lighter {
+      background-color: $accent-lighter;
+   }
+   .bg-accent-darker {
+      background-color: $accent-darker;
+   }
+   .bg-warn {
+      background-color: $warn;
+   }
+   .bg-warn-lighter {
+      background-color: $warn-lighter;
+   }
+   .bg-warn-darker {
+      background-color: $warn-darker;
+   }
+   .bg-secondary {
+      color: $grey;
+   }
+   .bg-secondary-darker {
+      color: $grey-darker;
+   }
+   .bg-secondary-lighter {
+      color: $grey-lighter;
+   }
+
+   .mat-card .mat-card-header .mat-card-title {
+      color: $accent-darker;
+   }
+
+   .mat-cell {
+      color: $grey-darker;
+   }
+
+   .item-menu span {
+      color: $grey-darker;
+   }
+
+   .custom-frame {
+      & .mat-checkbox-background,
+      .mat-checkbox-frame {
+         border-radius: 70% !important;
+         border-color: $primary;
+      }
+   }
+}

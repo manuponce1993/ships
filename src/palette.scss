@@ -1,0 +1,19 @@
+// Import library functions for theme creation.
+@import '~@angular/material/theming';
+@import './styles.scss';
+
+$primary-map: map-get($appwebfinanciadores-theme, primary);
+$accent-map: map-get($appwebfinanciadores-theme, accent);
+$warn-map: map-get($appwebfinanciadores-theme, warn);
+
+$primary: mat-color($primary-map);
+$primary-lighter: mat-color($primary-map, lighter);
+$primary-darker: mat-color($primary-map, darker);
+$accent: mat-color($accent-map);
+$accent-lighter: mat-color($accent-map, lighter);
+$accent-darker: mat-color($accent-map, darker);
+$warn: mat-color($warn-map);
+$warn-lighter: mat-color($warn-map, lighter);
+$warn-darker: mat-color($warn-map, darker);
+
+$secondary: mat-palette($mat-grey, 500);

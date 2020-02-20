@@ -1,0 +1,77 @@
+// Import library functions for theme creation.
+@import '~@angular/material/theming';
+
+// Define a mixin that accepts a theme and outputs the theme-specific styles.
+@mixin layout-mixins($theme) {
+   // Extract the palettes you need from the theme definition.
+   $primary-map: map-get($theme, primary);
+   $accent-map: map-get($theme, accent);
+   $warn-map: map-get($theme, warn);
+
+   $primary: mat-color($primary-map);
+   $primary-lighter: mat-color($primary-map, lighter);
+   $primary-darker: mat-color($primary-map, darker);
+   $accent: mat-color($accent-map);
+   $accent-lighter: mat-color($accent-map, lighter);
+   $accent-darker: mat-color($accent-map, darker);
+   $warn: mat-color($warn-map);
+   $warn-lighter: mat-color($warn-map, lighter);
+   $warn-darker: mat-color($warn-map, darker);
+
+   .mat-toolbar-rigth {
+      // Use mat-color to extract individual colors from a palette.
+      background-color: $primary-darker;
+      border-color: mat-color($accent-map, A400);
+      color: white;
+      z-index: 999 !important;
+   }
+
+   .is-active {
+      background-color: mat-color($primary-map, 100);
+   }
+
+   .is-active-clear {
+      background-color: mat-color($primary-map, 50);
+   }
+
+   .is-active.item-menu {
+      color: $primary !important;
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+      -moz-box-sizing: border-box; /* Firefox, other Gecko */
+      box-sizing: border-box; /* Opera/IE 8+ */
+      border-left-style: solid;
+      border-width: 4px;
+   }
+
+   .is-active.item-menu span {
+      color: $primary !important;
+   }
+
+   .is-active .mat-icon {
+      color: $primary;
+   }
+
+   .item-menu {
+      color: $accent;
+      font-size: 14px !important;
+   }
+
+   .item-menu:hover {
+      color: $primary;
+      background-color: mat-color($primary-map, 100) !important;
+   }
+
+   .mat-nav-list .title-menu {
+      //   color: $secondary-text;
+      //   color: mat-color($accent, lighter) !important;
+      font-size: 12px !important;
+      color: $primary-darker;
+   }
+
+   .mat-nav-list .title-menu-adomicilio {
+      //   color: $secondary-text;
+      //   color: mat-color($accent, lighter) !important;
+      font-size: 12px !important;
+      color: $accent-darker;
+   }
+}
