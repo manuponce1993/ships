@@ -1,0 +1,123 @@
+<mat-card class="card-shadow">
+   <mat-card-header fxLayout="column">
+      <mat-card-title fxLayout="row" fxLayoutAlign="space-between start"
+         ><span>Mis novedades</span>
+         <div>
+            <button mat-icon-button [matMenuTriggerFor]="menuUser">
+               <mat-icon class="medium">scatter_plot</mat-icon>
+            </button>
+         </div>
+      </mat-card-title>
+      <mat-card-subtitle>
+         {{
+            this.allNewsShowed ? 'Historial de novedades' : 'Novedades activas'
+         }}</mat-card-subtitle
+      >
+   </mat-card-header>
+   <mat-card-content>
+      <div class="mx-4 mb-2">
+         <mat-list *ngIf="!!this.news">
+            <div *ngFor="let new of news">
+               <button
+                  mat-menu-item
+                  class="parentShowOnHover"
+                  (click)="onClickNew(new)"
+                  [ngClass]="{ 'is-active-clear': !new.read }"
+               >
+                  <mat-list-item>
+                     <span
+                        fxFlex="20"
+                        [ngClass]="{
+                           'text-secondary': new.deleted,
+                           'text-secondary-darker': !new.deleted
+                        }"
+                        class="text-secondary-darker"
+                     >
+                        <del *ngIf="new.deleted">
+                           {{ new.date | date: 'dd/MM/yyyy' }}
+                        </del>
+                        <span *ngIf="!new.deleted">
+                           {{ new.date | date: 'dd/MM/yyyy' }}
+                        </span>
+                     </span>
+                     <span
+                        fxFlex="70"
+                        [ngClass]="{
+                           'text-secondary': new.deleted,
+                           'text-secondary-darker': !new.deleted
+                        }"
+                        [innerHTML]="new.text"
+                     ></span>
+                  </mat-list-item>
+                  <mat-checkbox
+                     style="z-index: 9999 !important;"
+                     #matCheckbox
+                     [matTooltip]="
+                        matCheckbox.checked ? 'Marcar como no leída' : 'Marcar como leída'
+                     "
+                     [color]="'primary'"
+                     fxFlex="5"
+                     class="custom-frame small showOnHover"
+                     [checked]="new.read"
+                     (click)="stopPropagation($event)"
+                     (change)="onChangeCheckboxRead(new.id, $event.checked, $event)"
+                  ></mat-checkbox>
+                  <div fxLayoutAlign="center center" fxLayout="row">
+                     <!-- Delete button -->
+                     <button
+                        *ngIf="!new.deleted"
+                        (click)="stopPropagation($event); onDeleteNew(new.id)"
+                        fxFlex
+                        mat-icon-button
+                        color="warn"
+                        fxLayoutAlign="end center"
+                     >
+                        <mat-icon
+                           class="medium showOnHover"
+                           [color]="'warn'"
+                           matTooltip="Eliminar novedad"
+                           >delete_forever</mat-icon
+                        >
+                     </button>
+                     <!-- Recover button -->
+                     <button
+                        *ngIf="new.deleted"
+                        (click)="stopPropagation($event); onRecoverNew(new.id)"
+                        fxFlex
+                        mat-icon-button
+                        color="primary"
+                        fxLayoutAlign="end center"
+                     >
+                        <mat-icon
+                           class="medium showOnHover"
+                           [color]="'primary'"
+                           matTooltip="Recuperar novedad"
+                           >restore_from_trash</mat-icon
+                        >
+                     </button>
+                  </div>
+               </button>
+               <mat-divider [inset]="true"></mat-divider>
+            </div>
+         </mat-list>
+      </div>
+   </mat-card-content>
+</mat-card>
+
+<mat-menu #menuUser="matMenu">
+   <button
+      *ngIf="!this.allNewsShowed; else onlyActiveNews"
+      mat-menu-item
+      fxLayoutAlign="start center"
+      (click)="this.getNews()"
+   >
+      <mat-icon>find_replace</mat-icon>
+      <span>Mostrar todas las novedades</span>
+   </button>
+   <ng-template #onlyActiveNews>
+      <button (click)="getActiveNews()" mat-menu-item fxLayoutAlign="start center">
+         <mat-icon>youtube_searched_for</mat-icon>
+         <span>Mostrar sólo las novedades habilitadas</span>
+      </button>
+   </ng-template>
+</mat-menu>

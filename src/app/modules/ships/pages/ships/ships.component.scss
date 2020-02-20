@@ -1,0 +1,29 @@
+.img-overlay-side {
+   background-image: url(./../../../../../assets/Poster-Vertical.jpg);
+   background-size: cover;
+   background-position: center;
+   z-index: -1;
+}
+
+.img-overlay-side:after {
+   content: '\A';
+   position: absolute;
+   width: 100%;
+   height: 100%;
+   background: rgba(0, 0, 0, 0.6);
+   opacity: 0;
+   transition: all 0.5s;
+   -webkit-transition: all 0.5s;
+   opacity: 0.8;
+}
+
+.logo {
+   opacity: 1;
+   z-index: 1;
+   width: 100%;
+   height: auto;
+}
+
+.logo-mobile {
+   width: 180px;
+}

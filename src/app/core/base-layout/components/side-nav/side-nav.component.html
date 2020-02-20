@@ -1,0 +1,107 @@
+<!-- Toolbar left -->
+<mat-toolbar color="primary" class="mat-toolbar-left">
+   <div fxFlex="80" fxLayoutAlign="start center">
+      <mat-icon class="mr-4" fxFlex="20" fxFlexOffset="10">account_circle</mat-icon>
+      <span class="mat-subheading-2 m-0" fxFlex="80">{{ this.user.name }}</span>
+   </div>
+   <div fxFlex="20">
+      <button mat-icon-button [matMenuTriggerFor]="menuUser">
+         <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+   </div>
+   <mat-menu #menuUser="matMenu">
+      <!-- <button mat-menu-item fxLayoutAlign="start center">
+         <mat-icon>face</mat-icon>
+         <span>Mi perfil</span>
+      </button> -->
+      <button (click)="onLogOut()" mat-menu-item fxLayoutAlign="start center">
+         <mat-icon>exit_to_app</mat-icon>
+         <span>Cerrar Sesión</span>
+      </button>
+   </mat-menu>
+</mat-toolbar>
+<!-- Side nav -->
+<mat-nav-list
+   style="min-height: 88vh;"
+   fxLayout="column wrap"
+   fxLayoutAlign="space-between stretch"
+>
+   <div class="mb-4">
+      <div class="mb-4">
+         <span class="title-menu pl-5">Principal</span>
+      </div>
+      <a
+         class="item-menu"
+         mat-list-item
+         [routerLink]="[routes.HOME]"
+         [routerLinkActive]="['is-active']"
+      >
+         <mat-icon [color]="sideIconColor" class="mr-5">home</mat-icon>
+         <span>
+            Home
+         </span>
+      </a>
+      <div class="mb-4">
+         <span class="title-menu pl-5">Listados</span>
+      </div>
+      <a
+         class="item-menu"
+         mat-list-item
+         [routerLink]="[routes.CASES]"
+         [routerLinkActive]="['is-active']"
+      >
+         <mat-icon [color]="sideIconColor" class="mr-5">toc</mat-icon>
+         <span>
+            Casos
+         </span>
+      </a>
+      <div class="my-4">
+         <span class="title-menu pl-5">Informes dinámicos</span>
+      </div>
+      <a
+         class="item-menu"
+         mat-list-item
+         [routerLink]="[routes.ATTENTIONS]"
+         [routerLinkActive]="['is-active']"
+      >
+         <mat-icon [color]="sideIconColor" class="mr-5">calendar_today</mat-icon>
+         <span>
+            Atenciones
+         </span>
+      </a>
+      <a
+         class="item-menu"
+         mat-list-item
+         [routerLink]="[routes.NEWS]"
+         [routerLinkActive]="['is-active']"
+      >
+         <mat-icon [color]="sideIconColor" class="mr-5">new_releases</mat-icon>
+         <span>
+            Novedades
+         </span>
+      </a>
+      <div class="my-4">
+         <span class="title-menu pl-5 ">adomicilio</span>
+      </div>
+      <a
+         class="item-menu"
+         mat-list-item
+         [routerLink]="[routes.CONTACT]"
+         [routerLinkActive]="['is-active']"
+      >
+         <mat-icon [color]="sideIconColor" class="mr-5">contact_mail</mat-icon>
+         <span>
+            Contacto
+         </span>
+      </a>
+   </div>
+   <div class="mt-5">
+      <div fxLayoutAlign="center center">
+         <img
+            style="width: 90px;
+                     height: auto;"
+            src="./../../../assets/logos/expertaArt.svg"
+         />
+      </div>
+   </div>
+</mat-nav-list>
