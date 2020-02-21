@@ -50,11 +50,64 @@ export class ShipsService {
          );
    }
 
+   getPuertos(): Observable<any> {
+      const queryParams = new HttpParams()
+         .append('startkey', '"puerto"')
+         .append('endkey', '"puerto\ufff0"')
+         .append('include_docs', 'true');
+      return this.http
+         .get<any>(`${environment.api}/_all_docs`, {
+            headers: this.queryHeaders,
+            observe: 'response',
+            params: queryParams,
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>((response) => {
+               return response.body.rows;
+            }),
+         );
+   }
+
+   getPescados(): Observable<any> {
+      const queryParams = new HttpParams()
+         .append('startkey', '"pez"')
+         .append('endkey', '"pez\ufff0"')
+         .append('include_docs', 'true');
+      return this.http
+         .get<any>(`${environment.api}/_all_docs`, {
+            headers: this.queryHeaders,
+            observe: 'response',
+            params: queryParams,
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>((response) => {
+               return response.body.rows;
+            }),
+         );
+   }
+
    ultimo_consumo(): Observable<any> {
       const queryParams = new HttpParams().append('group', 'true');
       // .append('key', `"${puertoId.toString()}"`);
       return this.http
          .get<any>(`${environment.api}/_design/mydesign_test/_view/consumo_combustible`, {
+            headers: this.queryHeaders,
+            observe: 'response',
+            params: queryParams,
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>((response) => {
+               return response.body.rows;
+            }),
+         );
+   }
+
+   mayor_pesca(pescadoId): Observable<any> {
+      const queryParams = new HttpParams()
+         .append('group', 'true')
+         .append('key', `"${pescadoId.toString()}"`);
+      return this.http
+         .get<any>(`${environment.api}/_design/mydesign_test/_view/top_empresa_pescado`, {
             headers: this.queryHeaders,
             observe: 'response',
             params: queryParams,
@@ -73,6 +126,59 @@ export class ShipsService {
          .get<any>(`${environment.api}/_design/mydesign_test/_view/alerta_salto_derrotero`, {
             headers: this.queryHeaders,
             observe: 'response',
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>((response) => {
+               return response.body.rows;
+            }),
+         );
+   }
+
+   desviacion_derrotero(min?, max?): Observable<any> {
+      let queryParams = new HttpParams();
+      min ? (queryParams = queryParams.append('startkey', min)) : null;
+      max ? (queryParams = queryParams.append('endkey', max)) : null;
+      return this.http
+         .get<any>(`${environment.api}/_design/mydesign_test/_view/desviacion_derrotero`, {
+            headers: this.queryHeaders,
+            observe: 'response',
+            params: queryParams,
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>((response) => {
+               return response.body.rows;
+            }),
+         );
+   }
+
+   ultima_posicion_barcos(): Observable<any> {
+      let queryParams = new HttpParams().append('group', 'true');
+      return this.http
+         .get<any>(`${environment.api}/_design/mydesign_test/_view/ultima_posicion_barco`, {
+            headers: this.queryHeaders,
+            observe: 'response',
+            params: queryParams,
+         })
+         .pipe<any>(
+            map<HttpResponse<any>, any>((response) => {
+               return response.body.rows;
+            }),
+         );
+   }
+
+   elementos_sin_colision(lon, lat): Observable<any> {
+      let queryParams = new HttpParams()
+         .append('lon', lon)
+         .append('lat', lat)
+         .append('radius', '10')
+         .append('limit', '100')
+         .append('relation', 'disjoint')
+         .append('nearest', 'true');
+      return this.http
+         .get<any>(`${environment.api}/_design/geodd/_geo/geoidx`, {
+            headers: this.queryHeaders,
+            observe: 'response',
+            params: queryParams,
          })
          .pipe<any>(
             map<HttpResponse<any>, any>((response) => {

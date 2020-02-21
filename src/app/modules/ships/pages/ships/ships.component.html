@@ -55,7 +55,7 @@
                      </span>
                   </div>
                   <div *ngFor="let ship of this.response1[0].value.ships">
-                     <h4 class="text-primary-darker">
+                     <h4 class="text-primary-darker" fxLayoutAlign="center start">
                         <mat-icon class="text-primary mr-1">directions_boat</mat-icon
                         >{{ ship | titlecase }}
                      </h4>
@@ -71,16 +71,36 @@
                   </span>
                </mat-panel-title>
             </mat-expansion-panel-header>
-
-            <mat-form-field>
-               <mat-label>First name</mat-label>
-               <input matInput />
-            </mat-form-field>
-
-            <mat-form-field>
-               <mat-label>Age</mat-label>
-               <input matInput type="number" min="1" />
-            </mat-form-field>
+            <div fxLayout="column wrap" class="mx-4">
+               <div fxLayoutAlign="center stretch">
+                  <button mat-raised-button (click)="onForm2Submit()">Buscar</button>
+               </div>
+               <table
+                  fxFlex="100"
+                  mat-table
+                  #table
+                  [dataSource]="this.response2"
+                  *ngIf="
+                     this.response2 && this.response2.length > 0 && !this.loadingResponse2;
+                     else loading2
+                  "
+               >
+                  <ng-container matColumnDef="shipId">
+                     <th mat-header-cell *matHeaderCellDef>Barco</th>
+                     <td mat-cell *matCellDef="let row">{{ row.key | titlecase }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="lon">
+                     <th mat-header-cell *matHeaderCellDef>Longitud</th>
+                     <td mat-cell *matCellDef="let row">{{ row.value.coordinates[0] }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="lat">
+                     <th mat-header-cell *matHeaderCellDef>Latitud</th>
+                     <td mat-cell *matCellDef="let row">{{ row.value.coordinates[1] }}</td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="['shipId', 'lon', 'lat']"></tr>
+                  <tr mat-row *matRowDef="let row; columns: ['shipId', 'lon', 'lat']"></tr>
+               </table>
+            </div>
          </mat-expansion-panel>
          <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -92,15 +112,52 @@
                </mat-panel-title>
             </mat-expansion-panel-header>
 
-            <mat-form-field>
-               <mat-label>First name</mat-label>
-               <input matInput />
-            </mat-form-field>
-
-            <mat-form-field>
-               <mat-label>Age</mat-label>
-               <input matInput type="number" min="1" />
-            </mat-form-field>
+            <div fxLayout="column" class="mx-4">
+               <form
+                  [formGroup]="form3"
+                  fxLayout="row"
+                  fxLayoutAlign="space-around start"
+                  (ngSubmit)="onForm3Submit()"
+               >
+                  <app-number-input
+                     [name]="this.MIN_DEVIATION"
+                     [form]="form3"
+                     [placeholder]="'Mínima desviación'"
+                  >
+                  </app-number-input>
+                  <app-number-input
+                     [name]="this.MAX_DEVIATION"
+                     [form]="form3"
+                     [placeholder]="'Máxima desviación'"
+                  >
+                  </app-number-input>
+                  <button mat-raised-button type="submit" [disabled]="!this.form3.valid">
+                     Buscar
+                  </button>
+               </form>
+               <table
+                  fxFlex="100"
+                  mat-table
+                  #table
+                  [dataSource]="this.response3"
+                  *ngIf="this.response3.length > 0 && !this.loadingResponse3; else loading3"
+               >
+                  <ng-container matColumnDef="shipId">
+                     <th mat-header-cell *matHeaderCellDef>Barco</th>
+                     <td mat-cell *matCellDef="let row">{{ row.value.shipId | titlecase }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="runner">
+                     <th mat-header-cell *matHeaderCellDef>Derrotero</th>
+                     <td mat-cell *matCellDef="let row">{{ row.id }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="deviation">
+                     <th mat-header-cell *matHeaderCellDef>Desviación</th>
+                     <td mat-cell *matCellDef="let row">{{ row.key }}</td>
+                  </ng-container>
+                  <tr mat-header-row *matHeaderRowDef="['shipId', 'runner', 'deviation']"></tr>
+                  <tr mat-row *matRowDef="let row; columns: ['shipId', 'runner', 'deviation']"></tr>
+               </table>
+            </div>
          </mat-expansion-panel>
          <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -241,12 +298,69 @@
                </div>
             </div>
          </mat-expansion-panel>
+         <mat-expansion-panel>
+            <mat-expansion-panel-header>
+               <mat-panel-title>
+                  <span class="text-primary-darker">
+                     <b>8-</b> ¿Qué empresa pescó mas cantidad de un determinado pez?
+                  </span>
+               </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div fxLayout="column" class="mx-4">
+               <form
+                  [formGroup]="form8"
+                  fxLayout="row"
+                  fxLayoutAlign="space-around start"
+                  (ngSubmit)="onForm8Submit()"
+               >
+                  <app-select-input
+                     [name]="this.FISH"
+                     [form]="form8"
+                     [placeholder]="'Seleccione un pez'"
+                     [elements]="this.fishs"
+                     [calculateId]="this.calculateId"
+                     [calculateName]="this.calculateName"
+                     fxFlex="80"
+                  >
+                  </app-select-input>
+                  <button mat-raised-button type="submit" [disabled]="!this.form8.valid">
+                     Buscar
+                  </button>
+               </form>
+               <div
+                  fxLayout="column"
+                  *ngIf="!!this.response8 && !this.loadingResponse8; else loading8"
+               >
+                  <div fxFlex="100" class="separator separator-center mt-2 mb-1">
+                     <span class="mx-2 text-secondary">
+                        {{ this.response8[0].value.weigth }} Kg en total
+                     </span>
+                  </div>
+                  <h4 class="text-primary-darker" fxLayoutAlign="center start">
+                     <mat-icon class="mr-1" style="color: #F0E68C;">emoji_events</mat-icon
+                     >{{ this.response8[0].value.company | titlecase }}
+                  </h4>
+               </div>
+            </div>
+         </mat-expansion-panel>
       </mat-accordion>
    </div>
 </div>
 
 <ng-template #loading1>
    <div *ngIf="this.loadingResponse1" fxFlex="100" fxLayoutAlign="center stretch">
+      <app-spinner></app-spinner>
+   </div>
+</ng-template>
+
+<ng-template #loading2>
+   <div *ngIf="this.loadingResponse2" fxFlex="100" fxLayoutAlign="center stretch">
+      <app-spinner></app-spinner>
+   </div>
+</ng-template>
+
+<ng-template #loading3>
+   <div *ngIf="this.loadingResponse3" fxFlex="100" fxLayoutAlign="center stretch">
       <app-spinner></app-spinner>
    </div>
 </ng-template>
@@ -259,6 +373,12 @@
 
 <ng-template #loading7>
    <div *ngIf="this.loadingResponse7" fxFlex="100" fxLayoutAlign="center stretch">
+      <app-spinner></app-spinner>
+   </div>
+</ng-template>
+
+<ng-template #loading8>
+   <div *ngIf="this.loadingResponse8" fxFlex="100" fxLayoutAlign="center stretch">
       <app-spinner></app-spinner>
    </div>
 </ng-template>

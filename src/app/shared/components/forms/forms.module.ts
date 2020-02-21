@@ -9,6 +9,7 @@ import { TextInputComponent } from './text-input/text-input.component';
 import { TextAreaInputComponent } from './text-area-input/text-area-input.component';
 import { DatePickerComponent } from './date-picker/date-picker.component';
 import { SelectInputComponent } from './select-input/select-input.component';
+import { NumberInputComponent } from './number-input/number-input.component';
 
 @NgModule({
    declarations: [
@@ -19,6 +20,7 @@ import { SelectInputComponent } from './select-input/select-input.component';
       TextAreaInputComponent,
       DatePickerComponent,
       SelectInputComponent,
+      NumberInputComponent,
    ],
    imports: [CommonModule, MaterialModule, ReactiveFormsModule],
    exports: [
@@ -30,6 +32,7 @@ import { SelectInputComponent } from './select-input/select-input.component';
       TextAreaInputComponent,
       DatePickerComponent,
       SelectInputComponent,
+      NumberInputComponent,
    ],
 })
 export class FormsModule {}
