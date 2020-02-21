@@ -80,4 +80,74 @@ export class ShipsService {
             }),
          );
    }
+
+   barcosLatitud(): Observable<any> {
+    const queryParams = new HttpParams().append('group', 'true');
+
+    return this.http
+       .get<any>(`${environment.api}/_design/mydesign_test/_view/cruce_latitud`, {
+          headers: this.queryHeaders,
+          observe: 'response',
+          params: queryParams
+       })
+       .pipe<any>(
+          map<HttpResponse<any>, any>((response) => {
+            console.log(response.body.rows)
+             return response.body.rows;
+          }),
+       );
+   }
+
+   getBenches(): Observable<any> {
+    const queryParams = new HttpParams()
+       .append('startkey', '"bancodepesca"')
+       .append('endkey', '"bancodepesca\ufff0"')
+       .append('include_docs', 'true');
+    return this.http
+       .get<any>(`${environment.api}/_all_docs`, {
+          headers: this.queryHeaders,
+          observe: 'response',
+          params: queryParams,
+       })
+       .pipe<any>(
+          map<HttpResponse<any>, any>((response) => {
+             return response.body.rows;
+          }),
+       );
+   }
+
+   getRoutes(): Observable<any> {
+    const queryParams = new HttpParams()
+       .append('group_level', '2')
+    return this.http
+       .get<any>(`${environment.api}/_design/mydesign_test/_view/rutas_por_derrotero`, {
+          headers: this.queryHeaders,
+          observe: 'response',
+          params: queryParams,
+       })
+       .pipe<any>(
+          map<HttpResponse<any>, any>((response) => {
+             return response.body.rows;
+          }),
+       );
+   }
+
+   routeCrosses(route): Observable<any> {
+    const queryParams = new HttpParams()
+       .append('g', 'linestring(' + route.toString() + ')')
+       .append('relation', 'crosses')
+       .append('limit', '100')
+       .append('nearest', 'true');
+    return this.http
+       .get<any>(`${environment.api}/_design/geodd/_geo/geoidx`, {
+          headers: this.queryHeaders,
+          observe: 'response',
+          params: queryParams,
+       })
+       .pipe<any>(
+          map<HttpResponse<any>, any>((response) => {
+             return response.body.rows;
+          }),
+       );
+   }
 }

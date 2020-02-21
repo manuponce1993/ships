@@ -165,34 +165,87 @@
                </mat-panel-title>
             </mat-expansion-panel-header>
 
-            <mat-form-field>
-               <mat-label>First name</mat-label>
-               <input matInput />
-            </mat-form-field>
-
-            <mat-form-field>
-               <mat-label>Age</mat-label>
-               <input matInput type="number" min="1" />
-            </mat-form-field>
+            <form
+                  [formGroup]="form5"
+                  fxLayout="row"
+                  fxLayoutAlign="space-around start"
+                  (ngSubmit)="onForm5Submit()"
+               >
+                  <app-select-input
+                  *ngIf="this.benches"
+                     [name]="this.BENCH_ID"
+                     [form]="form5"
+                     [placeholder]="'Seleccione un banco de pesca'"
+                     [elements]="this.benches"
+                     [calculateId]="this.calculateId"
+                     [calculateName]="this.calculateName"
+                     fxFlex="80"
+                  >
+                  </app-select-input>
+                  <button mat-raised-button type="submit" [disabled]="!this.form5.valid">
+                     Buscar
+                  </button>
+               </form>
+               <div
+                  fxLayout="column"
+                  *ngIf="!!this.shipsCrossingBench && !this.loadingResponse5; else loading1"
+               >
+                  <div fxFlex="100" class="separator separator-center mt-2 mb-1">
+                     <span class="mx-2 text-secondary">
+                        {{ this.shipsCrossingBench.length }} Barcos en total
+                     </span>
+                  </div>
+                  <div *ngFor="let ship of this.shipsCrossingBench">
+                     <h4 class="text-primary-darker">
+                        <mat-icon class="text-primary mr-1">directions_boat</mat-icon
+                        >{{ ship | titlecase }}
+                     </h4>
+                  </div>
+               </div>
          </mat-expansion-panel>
          <mat-expansion-panel>
             <mat-expansion-panel-header>
                <mat-panel-title>
                   <span class="text-primary-darker">
-                     <b>6-</b> ¿Cuántos barcos cruzaron la latitud -33?
+                     <b>6-</b> ¿Cuántos barcos cruzaron la latitud X?
                   </span>
                </mat-panel-title>
             </mat-expansion-panel-header>
 
-            <mat-form-field>
-               <mat-label>First name</mat-label>
-               <input matInput />
-            </mat-form-field>
+            <form
+                  [formGroup]="form6"
+                  fxLayout="row"
+                  fxLayoutAlign="space-around start"
+                  (ngSubmit)="onForm6Submit()"
+               >
+                  <app-text-input
+                    [name]="this.LATITUDE"
+                    [form]="form6"
+                    [placeholder]="'Ingrese latitud'"
+                    fxFlex="80"
+                  ></app-text-input>
+                  <button mat-raised-button type="submit" [disabled]="!this.form6.valid"
+                  >
+                     Buscar
+                  </button>
+               </form>
+               <div
+                  fxLayout="column"
+                  *ngIf="!!this.response6 && !this.loadingResponse6; else loading6"
+               >
+                  <div fxFlex="100" class="separator separator-center mt-2 mb-1">
+                     <span class="mx-2 text-secondary">
+                        {{ this.response6.length }} Barcos en total
+                     </span>
+                  </div>
+                  <div *ngFor="let ship of this.response6">
+                     <h4 class="text-primary-darker">
+                        <mat-icon class="text-primary mr-1">directions_boat</mat-icon
+                        >{{ ship.key[0] | titlecase }}
+                     </h4>
+                  </div>
+               </div>
 
-            <mat-form-field>
-               <mat-label>Age</mat-label>
-               <input matInput type="number" min="1" />
-            </mat-form-field>
          </mat-expansion-panel>
          <mat-expansion-panel>
             <mat-expansion-panel-header>
@@ -253,6 +306,18 @@
 
 <ng-template #loading4>
    <div *ngIf="this.loadingResponse4" fxFlex="100" fxLayoutAlign="center stretch">
+      <app-spinner></app-spinner>
+   </div>
+</ng-template>
+
+<ng-template #loading5>
+   <div *ngIf="this.loadingResponse5" fxFlex="100" fxLayoutAlign="center stretch">
+      <app-spinner></app-spinner>
+   </div>
+</ng-template>
+
+<ng-template #loading6>
+   <div *ngIf="this.loadingResponse6" fxFlex="100" fxLayoutAlign="center stretch">
       <app-spinner></app-spinner>
    </div>
 </ng-template>
