@@ -9,36 +9,44 @@ import { ShipsService } from '../../ships.service';
    styleUrls: ['./ships.component.scss'],
 })
 export class ShipsComponent implements OnInit {
-   harbours = [
-      { id: 'puerto-mdp', name: 'Puerto de Mar del Plata' },
-      { id: 'puerto-caba', name: 'Puerto de Ciudad Autónoma de Buenos Aires' },
-   ];
+   harbours;
+   fishs;
    benches = [];
    routes = [];
    ships = [];
+   harboursRequest = [];
    shipsOverConsumption = [];
    shipsAvoidRunner = [];
    shipsLatitude = [];
    shipsCrossingBench:Set<any>;
 
-
    loadingResponse1 = false;
+   loadingResponse2 = false;
+   loadingResponse3 = false;
    loadingResponse4 = false;
    loadingResponse5 = false;
    loadingResponse6 = false;
    loadingResponse7 = false;
+   loadingResponse8 = false;
    form1: FormGroup;
    form2: FormGroup;
    form3: FormGroup;
    form4: FormGroup;
    form5: FormGroup;
    form6: FormGroup;
+   form8: FormGroup;
    public readonly HARBOUR_ID = 'puerto';
+   public readonly MIN_DEVIATION = 'min_deviation';
+   public readonly MAX_DEVIATION = 'max_deviation';
+   public readonly FISH = 'fish';
    public readonly LATITUDE = 'latitud';
    public readonly BENCH_ID = 'banco';
    response1;
+   response2: any = [];
+   response3 = [];
    response5;
    response6;
+   response8;
 
    constructor(private formBuilder: FormBuilder, private service: ShipsService) {}
 
@@ -54,10 +62,28 @@ export class ShipsComponent implements OnInit {
     return this.form6.get(this.LATITUDE);
    }
 
+   get form3MinDeviation() {
+      return this.form3.get(this.MIN_DEVIATION);
+   }
+
+   get form3MaxDeviation() {
+      return this.form3.get(this.MAX_DEVIATION);
+   }
+
+   get form8FishId() {
+      return this.form8.get(this.FISH);
+   }
+
    ngOnInit() {
       this.form1 = this.createForm1();
+      this.form3 = this.createForm3();
       this.form5 = this.createForm5();
       this.form6 = this.createForm6();
+      this.form8 = this.createForm8();
+
+      this.getPuertos()
+         .then((data) => data.map((harbourDoc) => ({ id: harbourDoc.id, name: harbourDoc.id })))
+         .then((harbours) => (this.harbours = harbours));
       this.getBarcos()
          .then((data) => data.map((shipDoc) => shipDoc.doc))
          .then((ships) => (this.ships = ships))
@@ -79,11 +105,22 @@ export class ShipsComponent implements OnInit {
         });
       })
       .then((routes) => console.log('ROUTES', this.routes));
+      this.getPescados()
+         .then((data) => data.map((fishDoc) => ({ id: fishDoc.id, name: fishDoc.id })))
+         .then((fishs) => (this.fishs = fishs))
+         .then((fishs) => console.log(fishs));
    }
 
    createForm1(): FormGroup {
       return this.formBuilder.group({
          [this.HARBOUR_ID]: ['', [CustomValidators.required('Puerto requerido')]],
+      });
+   }
+
+   createForm3(): FormGroup {
+      return this.formBuilder.group({
+         [this.MIN_DEVIATION]: [''],
+         [this.MAX_DEVIATION]: [''],
       });
    }
 
@@ -99,14 +136,30 @@ export class ShipsComponent implements OnInit {
     });
    }
 
+
+   createForm8(): FormGroup {
+      return this.formBuilder.group({
+         [this.FISH]: ['', [CustomValidators.required('Pescado requerido')]],
+      });
+   }
+
    onForm1Submit() {
       this.barcos_por_puerto(this.form1HarbourId.value)
-         .then((data) => {
-            console.log(data);
-            this.response1 = data;
-         })
-         .then((_) => (this.loadingResponse1 = false));
+      .then((data) => {
+        console.log(data);
+        this.response1 = data;
+      })
+      .then((_) => (this.loadingResponse1 = false));
    }
+
+    onForm3Submit() {
+      this.desviacion_derrotero(this.form3MinDeviation.value, this.form3MaxDeviation.value)
+        .then((data) => {
+            console.log(data);
+            this.response3 = data;
+        })
+        .then((_) => (this.loadingResponse3 = false));
+    }
 
    onForm5Submit() {
     this.shipsCrossingBench = new Set<any>();
@@ -116,15 +169,75 @@ export class ShipsComponent implements OnInit {
   }
 
    onForm6Submit() {
-    this.barcos_latitud()
-       .then((data) =>
-          this.calculateShipsLatitude(data, this.form6Latitude.value))
-       .then((ships) => {
+      this.barcos_latitud()
+      .then((data) =>
+        this.calculateShipsLatitude(data, this.form6Latitude.value))
+      .then((ships) => {
         console.log('SHIPS', ships)
         this.response6 = ships
       })
-       .then((_) => (this.loadingResponse6 = false));
+      .then((_) => (this.loadingResponse6 = false));
    }
+
+
+   onForm8Submit() {
+      this.mayor_pesca(this.form8FishId.value)
+      .then((data) => {
+        console.log(data);
+        this.response8 = data;
+      })
+      .then((_) => (this.loadingResponse8 = false));
+   }
+
+   onForm2Submit() {
+      this.loadingResponse2 = true;
+      this.getPuertos()
+      .then((data) => {
+        this.harboursRequest = data.map((harbourDoc) => harbourDoc.id);
+      })
+      .then((_) => this.ultima_posicion_barcos())
+      .then((data) => this.shipsOutOfPort(data))
+      .then((barcos) => (this.response2 = barcos))
+      .then((_) => (this.loadingResponse2 = false));
+   }
+
+   async shipsOutOfPort(shipsLastPosition) {
+      const allHarboursPresent = async (elements): Promise<boolean> => {
+         return new Promise((res, rej) => {
+            const response = this.harboursRequest.every((harbour) => elements.includes(harbour));
+            console.log('resp', response);
+
+            res(response);
+         });
+      };
+      let arrayResponse = [];
+
+      return new Promise(async (res, rej) => {
+         for (let index = 0; index < shipsLastPosition.length; index++) {
+            const elementosSinColision = await this.elementos_sin_colision(
+               shipsLastPosition[index].value.coordinates[0],
+               shipsLastPosition[index].value.coordinates[1],
+            );
+            console.log('paso');
+            const elementosSinColisionIds = await elementosSinColision.map((element) => element.id);
+
+            const stay = await allHarboursPresent(elementosSinColisionIds);
+            stay ? arrayResponse.push(shipsLastPosition[index]) : null;
+         }
+         console.log('salio');
+         res(arrayResponse);
+      });
+   }
+
+   // Por cada barco llamar a la request para saber con que no colisiona
+   // Cuando llegue esa respuesta mapear a solo id, luego comprobar si todos los puertos están presentes
+   // Si se cumple -> agregar barco como fuera de puerto
+
+   // Llamado a la request para saber con que no colisiona
+   //.then mapear solo id dataNoColision
+   // Retorno true si todos los puertos se encuentran entre los elementos que
+   // no colisionan con el barco
+   // * (Args: lon y lat)
 
    onComprobarConsumo() {
       this.loadingResponse7 = true;
@@ -182,10 +295,56 @@ export class ShipsComponent implements OnInit {
       });
    }
 
+   getPescados(): Promise<any> {
+      return new Promise((resolve, reject) => {
+         this.service.getPescados().subscribe(
+            (data) => {
+               console.log(data);
+               resolve(data);
+            },
+            (err) => {
+               console.log(err);
+               reject(err);
+            },
+         );
+      });
+   }
+
+   getPuertos(): Promise<any> {
+      return new Promise((resolve, reject) => {
+         this.service.getPuertos().subscribe(
+            (data) => {
+               console.log(data);
+               resolve(data);
+            },
+            (err) => {
+               console.log(err);
+               reject(err);
+            },
+         );
+      });
+   }
+
    barcos_por_puerto(puertoId): Promise<any> {
       this.loadingResponse1 = true;
       return new Promise((resolve, reject) => {
          this.service.barcos_por_puerto(puertoId).subscribe(
+            (data) => {
+               console.log(data);
+               resolve(data);
+            },
+            (err) => {
+               console.log(err);
+               reject(err);
+            },
+         );
+      });
+   }
+
+   mayor_pesca(pescadoId): Promise<any> {
+      this.loadingResponse8 = true;
+      return new Promise((resolve, reject) => {
+         this.service.mayor_pesca(pescadoId).subscribe(
             (data) => {
                console.log(data);
                resolve(data);
@@ -310,4 +469,50 @@ export class ShipsComponent implements OnInit {
 
  }
 
+   desviacion_derrotero(min, max): Promise<any> {
+      this.loadingResponse3 = true;
+      return new Promise((resolve, reject) => {
+         this.service.desviacion_derrotero(min, max).subscribe(
+            (data) => {
+               console.log(data);
+               resolve(data);
+            },
+            (err) => {
+               console.log(err);
+               reject(err);
+            },
+         );
+      });
+   }
+
+   ultima_posicion_barcos(): Promise<any> {
+      this.loadingResponse3 = true;
+      return new Promise((resolve, reject) => {
+         this.service.ultima_posicion_barcos().subscribe(
+            (data) => {
+               console.log(data);
+               resolve(data);
+            },
+            (err) => {
+               console.log(err);
+               reject(err);
+            },
+         );
+      });
+   }
+
+   elementos_sin_colision(lon, lat): Promise<any> {
+      return new Promise((resolve, reject) => {
+         this.service.elementos_sin_colision(lon, lat).subscribe(
+            (data) => {
+               console.log(data);
+               resolve(data);
+            },
+            (err) => {
+               console.log(err);
+               reject(err);
+            },
+         );
+      });
+   }
 }
